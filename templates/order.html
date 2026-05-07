@@ -13,30 +13,30 @@
         .filters a { margin-right: 10px; padding: 8px 15px; background: #ddd; text-decoration: none; border-radius: 5px; color: #333; }
         .filters a.active { background: #d35400; color: white; }
         table { width: 100%; background: white; border-collapse: collapse; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #333; color: white; }
         tr:hover { background: #f9f9f9; }
-        .status { padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
+        .status { padding: 4px 10px; border-radius: 15px; font-size: 12px; font-weight: bold; }
         .pending { background: #f39c12; color: white; }
         .preparing { background: #3498db; color: white; }
         .ready { background: #2ecc71; color: white; }
         .delivered { background: #27ae60; color: white; }
-        select, button { padding: 8px 12px; margin: 2px; }
-        button { background: #d35400; color: white; border: none; cursor: pointer; border-radius: 3px; }
+        .cancelled { background: #e74c3c; color: white; }
+        select, button { padding: 6px 10px; border-radius: 4px; border: 1px solid #ccc; }
+        button { background: #d35400; color: white; border: none; cursor: pointer; }
+        .empty { text-align: center; padding: 40px; color: #666; }
+        .count { color: #666; margin-bottom: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>📦 Orders</h1>
-    </div>
-    
+    <div class="header"><h1>📦 Orders</h1></div>
     <div class="nav">
         <a href="/dashboard?password={{ password }}">← Dashboard</a>
-        <a href="/dashboard/orders?password={{ password }}">All</a>
+        <a href="/dashboard/orders?password={{ password }}">All Orders</a>
         <a href="/dashboard/complaints?password={{ password }}">Complaints</a>
         <a href="/dashboard/customers?password={{ password }}">Customers</a>
+        <a href="/dashboard/messages?password={{ password }}">Messages</a>
     </div>
-    
     <div class="container">
         <div class="filters">
             Filter:
@@ -46,45 +46,44 @@
             <a href="/dashboard/orders?password={{ password }}&status=ready" class="{{ 'active' if filter_status == 'ready' else '' }}">Ready</a>
             <a href="/dashboard/orders?password={{ password }}&status=delivered" class="{{ 'active' if filter_status == 'delivered' else '' }}">Delivered</a>
         </div>
-        
+        <p class="count">{{ orders|length }} order(s) found</p>
+        {% if orders %}
         <table>
             <thead>
                 <tr>
-                    <th>Order #</th>
-                    <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Items</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Action</th>
+                    <th>Order #</th><th>Customer</th><th>Phone</th><th>Items</th>
+                    <th>Total</th><th>Address</th><th>Status</th><th>Date</th><th>Update</th>
                 </tr>
             </thead>
             <tbody>
                 {% for order in orders %}
                 <tr>
-                    <td>#{{ order.id }}</td>
+                    <td><strong>#{{ order.id }}</strong></td>
                     <td>{{ order.customer_name or 'Guest' }}</td>
-                    <td>{{ order.phone }}</td>
-                    <td>{{ order.items[:50] }}...</td>
-                    <td>₦{{ "{:,}".format(order.total or 0) }}</td>
-                    <td><span class="status {{ order.status }}">{{ order.status }}</span></td>
-                    <td>{{ order.created_at }}</td>
+                    <td>{{ order.phone | replace('whatsapp:', '') }}</td>
+                    <td>{{ (order.items or 'N/A')[:45] }}{{ '...' if order.items and order.items|length > 45 else '' }}</td>
+                    <td><strong>₦{{ "{:,}".format(order.total or 0) }}</strong></td>
+                    <td>{{ order.delivery_address or 'Pickup' }}</td>
+                    <td><span class="status {{ order.status or 'pending' }}">{{ order.status or 'pending' }}</span></td>
+                    <td>{{ (order.created_at or '')[:16] }}</td>
                     <td>
-                        <form method="post" action="/dashboard/orders/{{ order.id }}/update?password={{ password }}" style="display: inline;">
+                        <form method="post" action="/dashboard/orders/{{ order.id }}/update?password={{ password }}">
                             <select name="status">
-                                <option value="pending" {{ 'selected' if order.status == 'pending' else '' }}>Pending</option>
-                                <option value="preparing" {{ 'selected' if order.status == 'preparing' else '' }}>Preparing</option>
-                                <option value="ready" {{ 'selected' if order.status == 'ready' else '' }}>Ready</option>
-                                <option value="delivered" {{ 'selected' if order.status == 'delivered' else '' }}>Delivered</option>
+                                <option value="pending" {{ 'selected' if order.status == 'pending' }}>Pending</option>
+                                <option value="preparing" {{ 'selected' if order.status == 'preparing' }}>Preparing</option>
+                                <option value="ready" {{ 'selected' if order.status == 'ready' }}>Ready</option>
+                                <option value="delivered" {{ 'selected' if order.status == 'delivered' }}>Delivered</option>
                             </select>
-                            <button type="submit">Update</button>
+                            <button type="submit">✓</button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="empty"><p>📭 No orders found{% if filter_status %} with status "{{ filter_status }}"{% endif %}</p></div>
+        {% endif %}
     </div>
 </body>
 </html>

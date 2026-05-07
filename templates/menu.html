@@ -20,10 +20,9 @@
         <h1>🍽️ Iya Meta</h1>
         <p>Authentic Nigerian Cuisine</p>
     </div>
-
     <div class="container">
-        {% set categories = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
-        {% for cat in categories %}
+        {% set cat_list = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
+        {% for cat in cat_list %}
         <div class="category">
             <h2>{{ cat }}</h2>
             {% for num, item in menu.items() %}
@@ -37,7 +36,6 @@
         </div>
         {% endfor %}
     </div>
-
     <div class="footer">
         <p>📱 Order via WhatsApp: {{ phone }}</p>
         <p>© 2026 Iya Meta Restaurant</p>
