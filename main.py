@@ -224,6 +224,80 @@ async def messages_page(request: Request, password: Optional[str] = None, phone:
         }
     )
 
+
+# ============ PAYSTACK PAYMENT WEBHOOK ============
+
+@app.post("/payment/webhook")
+async def paystack_webhook(request: Request):
+    payload = await request.body()
+    signature = request.headers.get("x-paystack-signature", "")
+
+    from payment import verify_webhook_signature, verify_payment
+    if not verify_webhook_signature(payload, signature):
+        raise HTTPException(status_code=400, detail="Invalid signature")
+
+    import json as json_lib
+    data = json_lib.loads(payload)
+
+    if data.get("event") == "charge.success":
+        reference = data["data"]["reference"]
+        result = verify_payment(reference)
+
+        if result["paid"]:
+            order_id = result["order_id"]
+            customer_phone = result["customer_phone"]
+            amount = result["amount"]
+
+            update_order_status(order_id, "paid", f"Paid via Paystack ref:{reference}")
+
+            try:
+                from twilio.rest import Client
+                client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+                msg = (
+                    f"✅ *Payment Confirmed!*\n\n"
+                    f"Order #{order_id} — ₦{amount:,} received.\n\n"
+                    f"🍽️ Your food is being prepared now!\n"
+                    f"⏰ Ready in 25-30 minutes.\n"
+                    f"📍 Farayola Layout, Bodija Market Road, Bodija, Ibadan\n\n"
+                    f"Thank you for ordering from Iya Meta! 🙏"
+                )
+                client.messages.create(
+                    from_=TWILIO_PHONE_NUMBER,
+                    to=customer_phone,
+                    body=msg
+                )
+            except Exception as e:
+                print(f"WhatsApp notification error: {e}")
+
+    return {"status": "ok"}
+
+
+@app.get("/payment/verify")
+async def payment_verify(request: Request, reference: str = ""):
+    if not reference:
+        return HTMLResponse("<h2>Payment reference missing</h2>")
+
+    from payment import verify_payment
+    result = verify_payment(reference)
+
+    if result["paid"]:
+        html = f"""<html><body style='font-family:Arial;text-align:center;padding:50px;background:#f5f5f5;'>
+        <div style='background:white;padding:40px;border-radius:12px;max-width:500px;margin:auto;'>
+        <h1 style='color:#27ae60'>✅ Payment Successful!</h1>
+        <p>Order #{result['order_id']} confirmed.</p>
+        <p><strong>₦{result['amount']:,}</strong> received.</p>
+        <p style='color:#666;margin-top:20px;'>Your food is being prepared.<br>You will get a WhatsApp message shortly.</p>
+        <p style='color:#999;font-size:13px;margin-top:20px;'>You can close this page.</p>
+        </div></body></html>"""
+        return HTMLResponse(html)
+    else:
+        html = """<html><body style='font-family:Arial;text-align:center;padding:50px;background:#f5f5f5;'>
+        <div style='background:white;padding:40px;border-radius:12px;max-width:500px;margin:auto;'>
+        <h1 style='color:#e74c3c'>❌ Payment Not Confirmed</h1>
+        <p>Please try again or contact the restaurant.</p>
+        </div></body></html>"""
+        return HTMLResponse(html)
+
 # ============ API ENDPOINTS (JSON) ============
 
 @app.get("/api/stats")
