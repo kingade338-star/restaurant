@@ -307,14 +307,37 @@ def process_confirm(msg: str, phone: str, state: Dict) -> str:
         order_id = save_order(phone, items_text, total, customer_name, address)
         update_customer_state(phone, json.dumps({'step': 'idle'}))
 
-        return (f"🎉 *Order #{order_id} CONFIRMED!*\n\n"
+        # Generate Paystack payment link
+        try:
+            from payment import create_payment_link
+            payment = create_payment_link(order_id, total, phone, customer_name)
+        except Exception as e:
+            print(f"Payment link error: {e}")
+            payment = {"success": False}
+
+        if payment.get("success"):
+            return (
+                f"✅ *Order #{order_id} Received!*\n\n"
+                f"Name: {customer_name}\n"
+                f"Items: {items_text}\n"
+                f"Total: ₦{total:,}\n"
+                f"Address: {address}\n\n"
+                f"💳 *Pay now to confirm your order:*\n"
+                f"{payment['link']}\n\n"
+                f"⚠️ Your order will only be prepared after payment.\n"
+                f"✅ You will get a WhatsApp message once payment is confirmed."
+            )
+        else:
+            return (
+                f"🎉 *Order #{order_id} CONFIRMED!*\n\n"
                 f"Name: {customer_name}\n"
                 f"Items: {items_text}\n"
                 f"Total: ₦{total:,}\n"
                 f"Address: {address}\n\n"
                 f"⏰ Ready in: 25-30 minutes\n"
                 f"📍 {RESTAURANT_ADDRESS}\n\n"
-                f"Reply 'Status' to check or 'Menu' to order more!")
+                f"Please pay on arrival/pickup."
+            )
 
     if msg in ['add', 'more']:
         update_customer_state(phone, json.dumps({'step': 'ordering', 'cart': cart}))
