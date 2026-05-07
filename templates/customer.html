@@ -47,7 +47,7 @@
                     <td>{{ customer.name or 'Unknown' }}</td>
                     <td>{{ customer.address or 'N/A' }}</td>
                     <td><span class="badge">{{ customer.total_orders }}</span></td>
-                    <td>₦{{ "{:,}".format(customer.total_spent) }}</td>
+                    <td>₦{{ "{:,}".format(customer.total_spent or 0) }}</td>
                     <td>{{ customer.last_order_date or 'Never' }}</td>
                     <td><a href="/dashboard/customer/{{ customer.phone }}?password={{ password }}">View History</a></td>
                 </tr>

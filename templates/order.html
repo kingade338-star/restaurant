@@ -67,7 +67,7 @@
                     <td>{{ order.customer_name or 'Guest' }}</td>
                     <td>{{ order.phone }}</td>
                     <td>{{ order.items[:50] }}...</td>
-                    <td>₦{{ "{:,}".format(order.total) }}</td>
+                    <td>₦{{ "{:,}".format(order.total or 0) }}</td>
                     <td><span class="status {{ order.status }}">{{ order.status }}</span></td>
                     <td>{{ order.created_at }}</td>
                     <td>
