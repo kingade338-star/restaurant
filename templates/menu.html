@@ -20,36 +20,27 @@
         <h1>🍽️ Iya Meta</h1>
         <p>Authentic Nigerian Cuisine</p>
     </div>
-    
-   <div class="container">
-    {% set categories = {} %}
-    {% for num, item in menu.items() %}
-        {% if item.category not in categories %}
-            {% set _ = categories.update({item.category: []}) %}
-        {% endif %}
-    {% endfor %}
 
-    {% set rice = [] %}{% set swallows = [] %}{% set proteins = [] %}{% set small_chops = [] %}{% set drinks = [] %}
-    {% for num, item in menu.items() %}
-        {% if item.category == 'Rice Dishes' %}{% set _ = rice.append((num, item)) %}
-        {% elif item.category == 'Swallows' %}{% set _ = swallows.append((num, item)) %}
-        {% elif item.category == 'Proteins' %}{% set _ = proteins.append((num, item)) %}
-        {% elif item.category == 'Small Chops' %}{% set _ = small_chops.append((num, item)) %}
-        {% elif item.category == 'Drinks' %}{% set _ = drinks.append((num, item)) %}
-        {% endif %}
-    {% endfor %}
-
-    {% for cat_name, cat_items in [('Rice Dishes', rice), ('Swallows', swallows), ('Proteins', proteins), ('Small Chops', small_chops), ('Drinks', drinks)] %}
-    {% if cat_items %}
-    <div class="category">
-        <h2>{{ cat_name }}</h2>
-        {% for num, item in cat_items %}
-        <div class="item">
-            <span>{{ num }}. {{ item.name }}</span>
-            <span class="price">₦{{ "{:,}".format(item.price) }}</span>
+    <div class="container">
+        {% set categories = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
+        {% for cat in categories %}
+        <div class="category">
+            <h2>{{ cat }}</h2>
+            {% for num, item in menu.items() %}
+                {% if item.category == cat %}
+                <div class="item">
+                    <span>{{ num }}. {{ item.name }}</span>
+                    <span class="price">₦{{ "{:,}".format(item.price) }}</span>
+                </div>
+                {% endif %}
+            {% endfor %}
         </div>
         {% endfor %}
     </div>
-    {% endif %}
-    {% endfor %}
-</div>
+
+    <div class="footer">
+        <p>📱 Order via WhatsApp: {{ phone }}</p>
+        <p>© 2026 Iya Meta Restaurant</p>
+    </div>
+</body>
+</html>
