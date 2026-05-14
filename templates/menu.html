@@ -1,44 +1,265 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Menu - Iya Meta</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; }
-        .header { background: #d35400; color: white; padding: 30px; text-align: center; }
-        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-        .category { background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h2 { color: #d35400; margin-bottom: 15px; border-bottom: 2px solid #d35400; padding-bottom: 10px; }
-        .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ddd; }
-        .item:last-child { border-bottom: none; }
-        .price { color: #d35400; font-weight: bold; }
-        .footer { text-align: center; padding: 30px; color: #666; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu — Iya Meta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fire: #C0392B;
+      --ember: #E74C3C;
+      --gold: #F39C12;
+      --cream: #FDF6EC;
+      --dark: #1A0A00;
+      --mud: #6B3A2A;
+      --smoke: #F5EDE4;
+      --white: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--smoke); color: var(--dark); }
+
+    /* HEADER */
+    .site-header {
+      background: var(--dark);
+      padding: 20px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--cream);
+      text-decoration: none;
+    }
+    .logo span { color: var(--fire); }
+
+    .header-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--fire); color: white;
+      padding: 10px 22px; border-radius: 100px;
+      text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: box-shadow 0.2s;
+    }
+    .header-cta:hover { box-shadow: 0 8px 24px rgba(192,57,43,0.4); }
+
+    /* HERO BANNER */
+    .menu-hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #3D1A0A 100%);
+      padding: 80px 48px 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-hero::before {
+      content: '🍛';
+      position: absolute;
+      font-size: 200px;
+      opacity: 0.05;
+      top: -20px; right: 40px;
+      transform: rotate(-15deg);
+    }
+
+    .menu-hero-label {
+      font-size: 11px; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+    }
+
+    .menu-hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 900; color: var(--cream);
+      line-height: 1.05; margin-bottom: 16px;
+    }
+
+    .menu-hero-sub {
+      color: #B89A8A; font-size: 15px; margin-bottom: 32px;
+    }
+
+    /* CATEGORY TABS */
+    .cat-tabs {
+      display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+      padding: 0 24px 40px;
+    }
+
+    .cat-tab {
+      padding: 8px 20px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.6);
+      cursor: pointer; font-size: 13px;
+      transition: all 0.2s;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .cat-tab.active, .cat-tab:hover {
+      background: var(--fire); border-color: var(--fire);
+      color: white;
+    }
+
+    /* MENU BODY */
+    .menu-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .category-block {
+      margin-bottom: 52px;
+    }
+
+    .cat-header {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .cat-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 700; color: var(--dark);
+    }
+
+    .cat-divider {
+      flex: 1; height: 1px;
+      background: linear-gradient(to right, var(--fire), transparent);
+      opacity: 0.3;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .menu-item {
+      background: white;
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all 0.25s ease;
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .menu-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: var(--fire);
+      transform: scaleY(0);
+      transition: transform 0.25s;
+    }
+
+    .menu-item:hover {
+      transform: translateX(4px);
+      border-color: rgba(192,57,43,0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .menu-item:hover::before { transform: scaleY(1); }
+
+    .item-num {
+      font-size: 11px; color: #ccc;
+      font-weight: 500; min-width: 24px;
+    }
+
+    .item-name {
+      flex: 1;
+      font-size: 15px; font-weight: 500; color: var(--dark);
+    }
+
+    .item-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px; font-weight: 700;
+      color: var(--fire);
+    }
+
+    /* FOOTER */
+    .menu-footer {
+      background: var(--dark);
+      text-align: center; padding: 40px 24px;
+      color: #5A3A2A; font-size: 13px;
+    }
+    .menu-footer a {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--fire); color: white;
+      padding: 14px 28px; border-radius: 100px;
+      text-decoration: none; font-size: 15px; font-weight: 500;
+      margin-bottom: 20px;
+    }
+    .menu-footer p { color: #5A3A2A; }
+
+    @media (max-width: 640px) {
+      .site-header { padding: 16px 20px; }
+      .menu-hero { padding: 60px 20px 40px; }
+      .menu-body { padding: 32px 16px 60px; }
+      .menu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🍽️ Iya Meta</h1>
-        <p>Authentic Nigerian Cuisine</p>
+
+  <header class="site-header">
+    <a href="/" class="logo">Iya<span>Meta</span></a>
+    <a href="https://wa.me/{{ phone }}" class="header-cta">
+      📱 Order Now
+    </a>
+  </header>
+
+  <div class="menu-hero">
+    <p class="menu-hero-label">Our Menu</p>
+    <h1 class="menu-hero-title">What are you<br>craving today?</h1>
+    <p class="menu-hero-sub">Fresh, authentic Nigerian cuisine — made to order</p>
+
+    <div class="cat-tabs">
+      {% set cat_list = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
+      {% for cat in cat_list %}
+      <button class="cat-tab {{ 'active' if loop.first else '' }}">{{ cat }}</button>
+      {% endfor %}
     </div>
-    <div class="container">
-        {% set cat_list = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
-        {% for cat in cat_list %}
-        <div class="category">
-            <h2>{{ cat }}</h2>
-            {% for num, item in menu.items() %}
-                {% if item.category == cat %}
-                <div class="item">
-                    <span>{{ num }}. {{ item.name }}</span>
-                    <span class="price">₦{{ "{:,}".format(item.price) }}</span>
-                </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+  </div>
+
+  <div class="menu-body">
+    {% set cat_icons = {'Rice Dishes': '🍚', 'Swallows': '🫙', 'Proteins': '🍗', 'Small Chops': '🍢', 'Drinks': '🥤'} %}
+    {% set cat_list = ['Rice Dishes', 'Swallows', 'Proteins', 'Small Chops', 'Drinks'] %}
+    {% for cat in cat_list %}
+    <div class="category-block">
+      <div class="cat-header">
+        <h2 class="cat-label">{{ cat_icons.get(cat, '🍽️') }} {{ cat }}</h2>
+        <div class="cat-divider"></div>
+      </div>
+      <div class="menu-grid">
+        {% for num, item in menu.items() %}
+          {% if item.category == cat %}
+          <div class="menu-item">
+            <span class="item-num">{{ num }}</span>
+            <span class="item-name">{{ item.name }}</span>
+            <span class="item-price">₦{{ "{:,}".format(item.price) }}</span>
+          </div>
+          {% endif %}
         {% endfor %}
+      </div>
     </div>
-    <div class="footer">
-        <p>📱 Order via WhatsApp: {{ phone }}</p>
-        <p>© 2026 Iya Meta Restaurant</p>
-    </div>
+    {% endfor %}
+  </div>
+
+  <div class="menu-footer">
+    <a href="https://wa.me/{{ phone }}">
+      📱 Order via WhatsApp
+    </a>
+    <p>© 2026 Iya Meta Restaurant &nbsp;·&nbsp; {{ phone }}</p>
+  </div>
+
 </body>
 </html>

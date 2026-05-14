@@ -1,24 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Iya Meta - Admin Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        h1 { color: #d35400; margin-bottom: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #d35400; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #e67e22; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Iya Meta</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fire: #C0392B;
+      --gold: #F39C12;
+      --cream: #FDF6EC;
+      --dark: #12090A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--dark);
+      color: var(--cream);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* LEFT PANEL */
+    .left-panel {
+      background: linear-gradient(160deg, #2A0D04 0%, #1A0A00 100%);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left-panel::before {
+      content: '🍲';
+      position: absolute;
+      font-size: 240px;
+      opacity: 0.05;
+      bottom: -40px; right: -20px;
+    }
+
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      top: 80px; right: 0;
+      width: 1px; height: calc(100% - 160px);
+      background: linear-gradient(to bottom, transparent, rgba(192,57,43,0.3), transparent);
+    }
+
+    .brand-tag {
+      font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 24px;
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 56px; font-weight: 900; line-height: 0.95;
+      color: var(--cream); margin-bottom: 20px;
+    }
+
+    .brand-title span { color: var(--fire); display: block; }
+
+    .brand-desc {
+      font-size: 14px; color: #7A5A52; line-height: 1.8;
+      max-width: 320px;
+    }
+
+    /* RIGHT PANEL */
+    .right-panel {
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 80px;
+      background: #0D0500;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px; font-weight: 700;
+      margin-bottom: 8px; color: var(--cream);
+    }
+
+    .login-sub {
+      color: #7A5A52; font-size: 14px; margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px; letter-spacing: 1px;
+      text-transform: uppercase; color: #7A5A52;
+      margin-bottom: 8px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--cream);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 24px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input[type="password"]:focus {
+      border-color: rgba(192,57,43,0.5);
+      background: rgba(192,57,43,0.04);
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--fire);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .login-btn:hover {
+      background: #E74C3C;
+      box-shadow: 0 8px 24px rgba(192,57,43,0.35);
+      transform: translateY(-1px);
+    }
+
+    .login-footer {
+      text-align: center; margin-top: 24px;
+      font-size: 12px; color: #5A3A2A;
+    }
+
+    .login-footer a {
+      color: var(--gold); text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      body { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 48px 24px; }
+    }
+  </style>
 </head>
 <body>
+
+  <div class="left-panel">
+    <p class="brand-tag">Admin Portal</p>
+    <h1 class="brand-title">
+      Iya
+      <span>Meta</span>
+    </h1>
+    <p class="brand-desc">Manage your restaurant orders, customer messages, complaints, and menu — all in one place.</p>
+  </div>
+
+  <div class="right-panel">
     <div class="login-box">
-        <h1>🍽️ Iya Meta</h1>
-        <p>Admin Dashboard</p>
-        <form method="get" action="/dashboard">
-            <input type="password" name="password" placeholder="Enter admin password" required>
-            <button type="submit">Login</button>
-        </form>
+      <h2 class="login-title">Welcome back</h2>
+      <p class="login-sub">Enter your password to access the dashboard.</p>
+
+      <form method="get" action="/dashboard">
+        <label for="password">Admin Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required autofocus>
+        <button type="submit" class="login-btn">Sign In →</button>
+      </form>
+
+      <div class="login-footer">
+        <a href="/">← Back to public site</a>
+      </div>
     </div>
+  </div>
+
 </body>
 </html>

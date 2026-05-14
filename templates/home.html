@@ -1,504 +1,570 @@
-# Replace `templates/home.html` With This
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ restaurant_name }}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ restaurant_name }} — Authentic Nigerian Cuisine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --fire: #C0392B;
+      --ember: #E74C3C;
+      --gold: #F39C12;
+      --cream: #FDF6EC;
+      --dark: #1A0A00;
+      --mud: #6B3A2A;
+      --smoke: #F5EDE4;
+    }
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <link rel="stylesheet" href="/static/css/style.css">
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--dark);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* Grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 60px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      width: fit-content;
+      animation: fadeUp 0.8s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 6vw, 88px);
+      font-weight: 900;
+      line-height: 0.95;
+      margin-bottom: 24px;
+      animation: fadeUp 0.8s 0.15s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-title span {
+      color: var(--fire);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: #B89A8A;
+      line-height: 1.7;
+      max-width: 380px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s 0.3s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.8s 0.45s ease forwards;
+      opacity: 0;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--fire);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.15));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 40px rgba(192,57,43,0.4);
+    }
+    .btn-primary:hover::before { opacity: 1; }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: var(--cream);
+      padding: 16px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-weight: 400;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(243,156,18,0.05);
+    }
+
+    /* Decorative rotating ring */
+    .hero-ring {
+      position: absolute;
+      bottom: -100px;
+      left: -100px;
+      width: 400px;
+      height: 400px;
+      border: 1px solid rgba(192,57,43,0.15);
+      border-radius: 50%;
+      animation: spin 30s linear infinite;
+    }
+    .hero-ring::after {
+      content: '';
+      position: absolute;
+      top: 40px; left: 40px; right: 40px; bottom: 40px;
+      border: 1px dashed rgba(243,156,18,0.1);
+      border-radius: 50%;
+    }
+
+    .hero-right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-img-wrap {
+      position: relative;
+      width: 420px;
+      height: 520px;
+      animation: fadeUp 1s 0.2s ease forwards;
+      opacity: 0;
+    }
+
+    /* Illustrated food graphic (SVG placeholder with warm colors) */
+    .food-plate {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(160deg, #3D1A0A 0%, #2A0D04 100%);
+      border-radius: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+    .food-plate::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(192,57,43,0.2), transparent 60%);
+    }
+
+    .floating-badge {
+      position: absolute;
+      background: var(--gold);
+      color: var(--dark);
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .badge-1 { top: 32px; right: -20px; animation: float 4s ease-in-out infinite; }
+    .badge-2 { bottom: 60px; left: -24px; background: var(--dark); color: var(--cream); border: 1px solid rgba(255,255,255,0.1); animation: float 4s 2s ease-in-out infinite; }
+
+    /* STRIPS */
+    .strip {
+      background: var(--fire);
+      padding: 14px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .strip-inner {
+      display: inline-flex;
+      gap: 40px;
+      animation: marquee 20s linear infinite;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* FEATURES */
+    .features {
+      background: var(--smoke);
+      color: var(--dark);
+      padding: 100px 60px;
+    }
+
+    .features-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--fire);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.15;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: white;
+      border-radius: 20px;
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--fire);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover::after { transform: scaleX(1); }
+
+    .feature-icon {
+      font-size: 36px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .feature-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .feature-text {
+      font-size: 14px;
+      color: #777;
+      line-height: 1.7;
+    }
+
+    /* CHATBOT CTA */
+    .chat-cta {
+      background: var(--dark);
+      padding: 100px 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chat-cta::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(192,57,43,0.15), transparent 70%);
+      border-radius: 50%;
+    }
+
+    .chat-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .chat-inner .section-label { color: var(--gold); }
+
+    .chat-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .chat-desc {
+      font-size: 16px;
+      color: #B89A8A;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* Mock chat preview */
+    .chat-preview {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    .chat-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: flex-end;
+    }
+
+    .chat-row.out { flex-direction: row-reverse; }
+
+    .chat-bubble {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .chat-row.in .chat-bubble {
+      background: rgba(255,255,255,0.06);
+      color: #ddd;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-row.out .chat-bubble {
+      background: var(--fire);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--fire);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #0D0500;
+      padding: 40px 60px;
+      text-align: center;
+      color: #5A3A2A;
+      font-size: 13px;
+    }
+
+    footer a { color: var(--gold); text-decoration: none; }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 60px 24px 40px; }
+      .hero-right { display: none; }
+      .features { padding: 60px 24px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .chat-cta { padding: 60px 24px; }
+      footer { padding: 24px; }
+    }
+  </style>
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo">
-            🍽 {{ restaurant_name }}
-        </div>
-
-        <nav>
-            <a href="#home">Home</a>
-            <a href="#features">Features</a>
-            <a href="#specials">Specials</a>
-            <a href="/dashboard">Dashboard</a>
-        </nav>
-    </header>
-
-    <section class="hero" id="home">
-        <div class="overlay"></div>
-
-        <div class="hero-content">
-            <span class="badge">AI Powered Restaurant Experience</span>
-
-            <h1>
-                Delicious Food <br>
-                Smarter Conversations.
-            </h1>
-
-            <p>
-                Order meals, ask questions, track deliveries and chat naturally with our AI restaurant assistant.
-            </p>
-
-            <div class="hero-buttons">
-                <a href="https://wa.me/{{ phone }}" class="primary-btn">
-                    <i class="fa-brands fa-whatsapp"></i>
-                    Chat on WhatsApp
-                </a>
-
-                <a href="#features" class="secondary-btn">
-                    Explore More
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section class="features" id="features">
-        <div class="section-title">
-            <h2>Why Customers Love Us</h2>
-            <p>Modern restaurant experience powered by AI.</p>
-        </div>
-
-        <div class="feature-grid">
-
-            <div class="feature-card">
-                <div class="icon">
-                    <i class="fa-solid fa-robot"></i>
-                </div>
-                <h3>AI Restaurant Assistant</h3>
-                <p>
-                    Customers can chat naturally, ask questions, place orders and receive smart recommendations.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">
-                    <i class="fa-solid fa-burger"></i>
-                </div>
-                <h3>Fresh Meals</h3>
-                <p>
-                    Beautifully prepared dishes with fast ordering and smooth customer experience.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon">
-                    <i class="fa-solid fa-truck-fast"></i>
-                </div>
-                <h3>Fast Delivery</h3>
-                <p>
-                    Easy WhatsApp ordering with quick delivery updates and responsive support.
-                </p>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="specials" id="specials">
-        <div class="section-title">
-            <h2>Popular Specials</h2>
-            <p>Customer favorites recommended by the AI assistant.</p>
-        </div>
-
-        <div class="special-grid">
-
-            <div class="food-card">
-                <div class="food-image one"></div>
-                <div class="food-content">
-                    <span class="tag">Best Seller</span>
-                    <h3>Spicy Chicken Combo</h3>
-                    <p>Perfect for customers who love spicy meals.</p>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <div class="food-image two"></div>
-                <div class="food-content">
-                    <span class="tag">Popular</span>
-                    <h3>Classic Burger Meal</h3>
-                    <p>Juicy burger served with fries and chilled drink.</p>
-                </div>
-            </div>
-
-            <div class="food-card">
-                <div class="food-image three"></div>
-                <div class="food-content">
-                    <span class="tag">New</span>
-                    <h3>Seafood Delight</h3>
-                    <p>Fresh seafood prepared with premium ingredients.</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <section class="cta-section">
-        <div class="cta-box">
-            <h2>Ready To Order?</h2>
-            <p>
-                Talk directly with our AI assistant on WhatsApp and enjoy a smarter restaurant experience.
-            </p>
-
-            <a href="https://wa.me/{{ phone }}" class="primary-btn">
-                Start Chatting
-            </a>
-        </div>
-    </section>
-
-    <div class="floating-chat">
-        <a href="https://wa.me/{{ phone }}">
-            <i class="fa-brands fa-whatsapp"></i>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <span class="hero-tag">🇳🇬 Lagos, Nigeria</span>
+      <h1 class="hero-title">
+        Iya Meta
+        <span>Restaurant</span>
+      </h1>
+      <p class="hero-sub">Authentic Nigerian flavours, served hot and delivered with love. Order via WhatsApp — our AI assistant is always ready to take your order.</p>
+      <div class="hero-actions">
+        <a href="https://wa.me/{{ phone }}" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M5.077 20.048A11.975 11.975 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0C5.373 0 0 5.373 0 12a11.975 11.975 0 0 0 1.893 6.502L0 24l5.077-3.952z"/></svg>
+          Order on WhatsApp
         </a>
+        <a href="/menu" class="btn-ghost">
+          🍽️ View Menu
+        </a>
+      </div>
+      <div class="hero-ring"></div>
     </div>
+
+    <div class="hero-right">
+      <div class="hero-img-wrap">
+        <div class="food-plate">🍛</div>
+        <div class="floating-badge badge-1">⭐ 4.9 Rating</div>
+        <div class="floating-badge badge-2">🕐 15–30 min delivery</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="strip">
+    <div class="strip-inner">
+      <span>Jollof Rice</span><span>✦</span>
+      <span>Egusi Soup</span><span>✦</span>
+      <span>Pounded Yam</span><span>✦</span>
+      <span>Suya</span><span>✦</span>
+      <span>Pepper Soup</span><span>✦</span>
+      <span>Fried Rice</span><span>✦</span>
+      <span>Ofada Stew</span><span>✦</span>
+      <span>Moin Moin</span><span>✦</span>
+      <span>Jollof Rice</span><span>✦</span>
+      <span>Egusi Soup</span><span>✦</span>
+      <span>Pounded Yam</span><span>✦</span>
+      <span>Suya</span><span>✦</span>
+      <span>Pepper Soup</span><span>✦</span>
+    </div>
+  </div>
+
+  <!-- WHY CHOOSE US -->
+  <section class="features">
+    <div class="features-header">
+      <p class="section-label">Why Iya Meta</p>
+      <h2 class="section-title">Real food. Real people.<br>Real fast.</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🤖</span>
+        <h3 class="feature-title">Smart WhatsApp AI</h3>
+        <p class="feature-text">Chat naturally with our AI assistant. Ask "what's available today?", place orders, check prices — all without calling anyone.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚡</span>
+        <h3 class="feature-title">Fast Delivery</h3>
+        <p class="feature-text">Hot food at your door in 15–30 minutes. Track your order status directly in WhatsApp chat.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🍲</span>
+        <h3 class="feature-title">Authentic Recipes</h3>
+        <p class="feature-text">Every dish cooked with original Nigerian recipes passed down for generations. No shortcuts, no compromises.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHATBOT CTA -->
+  <section class="chat-cta">
+    <div class="chat-inner">
+      <p class="section-label">AI WhatsApp Assistant</p>
+      <h2 class="chat-title">Order the way you talk</h2>
+      <p class="chat-desc">Our intelligent chatbot understands plain English (and Pidgin!). Just send a message — no menus to scroll through, no apps to download.</p>
+
+      <div class="chat-preview">
+        <div class="chat-row in">
+          <div class="chat-avatar">🤖</div>
+          <div class="chat-bubble">Hello! Welcome to Iya Meta 🍛 What can I get for you today?</div>
+        </div>
+        <div class="chat-row out">
+          <div class="chat-bubble">I want jollof rice and two pieces of chicken abeg</div>
+          <div class="chat-avatar" style="background:#333;font-size:14px;">😊</div>
+        </div>
+        <div class="chat-row in">
+          <div class="chat-avatar">🤖</div>
+          <div class="chat-bubble">Got it! Jollof Rice + 2 Chicken pieces = ₦3,500. Shall I add your usual delivery address? 📍</div>
+        </div>
+      </div>
+
+      <a href="https://wa.me/{{ phone }}" class="btn-primary" style="display:inline-flex; margin: 0 auto;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M5.077 20.048A11.975 11.975 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0C5.373 0 0 5.373 0 12a11.975 11.975 0 0 0 1.893 6.502L0 24l5.077-3.952z"/></svg>
+        Start Chatting Now
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Iya Meta Restaurant &nbsp;·&nbsp; WhatsApp: <a href="https://wa.me/{{ phone }}">{{ phone }}</a> &nbsp;·&nbsp; <a href="/dashboard">Admin</a> &nbsp;·&nbsp; <a href="/menu">Menu</a></p>
+  </footer>
 
 </body>
 </html>
-```
-
----
-
-# Replace `static/css/style.css` With This
-
-```css
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #0f172a;
-    color: white;
-    overflow-x: hidden;
-}
-
-.navbar {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 8%;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(12px);
-}
-
-.logo {
-    font-size: 1.3rem;
-    font-weight: 700;
-}
-
-nav {
-    display: flex;
-    gap: 25px;
-}
-
-nav a {
-    text-decoration: none;
-    color: white;
-    font-weight: 500;
-    transition: 0.3s ease;
-}
-
-nav a:hover {
-    color: #25d366;
-}
-
-.hero {
-    min-height: 100vh;
-    background:
-        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-        url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1400&auto=format&fit=crop');
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: center;
-    padding: 0 8%;
-    position: relative;
-}
-
-.hero-content {
-    max-width: 700px;
-    z-index: 2;
-}
-
-.badge {
-    display: inline-block;
-    padding: 10px 18px;
-    background: rgba(37, 211, 102, 0.15);
-    border: 1px solid rgba(37, 211, 102, 0.4);
-    border-radius: 999px;
-    margin-bottom: 20px;
-    color: #25d366;
-    font-size: 0.9rem;
-}
-
-.hero h1 {
-    font-size: 4rem;
-    line-height: 1.1;
-    margin-bottom: 20px;
-}
-
-.hero p {
-    font-size: 1.1rem;
-    color: #d1d5db;
-    line-height: 1.8;
-    margin-bottom: 30px;
-}
-
-.hero-buttons {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.primary-btn,
-.secondary-btn {
-    padding: 15px 28px;
-    border-radius: 12px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.3s ease;
-}
-
-.primary-btn {
-    background: #25d366;
-    color: white;
-}
-
-.primary-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.35);
-}
-
-.secondary-btn {
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white;
-}
-
-.secondary-btn:hover {
-    background: rgba(255,255,255,0.1);
-}
-
-.features,
-.specials {
-    padding: 100px 8%;
-}
-
-.section-title {
-    text-align: center;
-    margin-bottom: 60px;
-}
-
-.section-title h2 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
-
-.section-title p {
-    color: #cbd5e1;
-}
-
-.feature-grid,
-.special-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.feature-card,
-.food-card {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 24px;
-    overflow: hidden;
-    transition: 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.feature-card:hover,
-.food-card:hover {
-    transform: translateY(-8px);
-}
-
-.feature-card {
-    padding: 40px 30px;
-}
-
-.icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 18px;
-    background: rgba(37, 211, 102, 0.15);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 25px;
-    font-size: 1.5rem;
-    color: #25d366;
-}
-
-.feature-card h3,
-.food-content h3 {
-    margin-bottom: 15px;
-}
-
-.feature-card p,
-.food-content p {
-    color: #cbd5e1;
-    line-height: 1.7;
-}
-
-.food-image {
-    height: 240px;
-    background-size: cover;
-    background-position: center;
-}
-
-.one {
-    background-image: url('https://images.unsplash.com/photo-1600891964092-4316c288032e?q=80&w=1200&auto=format&fit=crop');
-}
-
-.two {
-    background-image: url('https://images.unsplash.com/photo-1568901346375-23c9450c58cd?q=80&w=1200&auto=format&fit=crop');
-}
-
-.three {
-    background-image: url('https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1200&auto=format&fit=crop');
-}
-
-.food-content {
-    padding: 25px;
-}
-
-.tag {
-    display: inline-block;
-    margin-bottom: 15px;
-    background: rgba(37, 211, 102, 0.2);
-    color: #25d366;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 0.8rem;
-}
-
-.cta-section {
-    padding: 0 8% 100px;
-}
-
-.cta-box {
-    background: linear-gradient(135deg, #25d366, #128c7e);
-    padding: 70px 40px;
-    border-radius: 30px;
-    text-align: center;
-}
-
-.cta-box h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-}
-
-.cta-box p {
-    max-width: 700px;
-    margin: 0 auto 30px;
-    line-height: 1.8;
-}
-
-.floating-chat {
-    position: fixed;
-    right: 25px;
-    bottom: 25px;
-    z-index: 999;
-}
-
-.floating-chat a {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #25d366;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    font-size: 2rem;
-    box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.08);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@media (max-width: 768px) {
-
-    .navbar {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    nav {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .hero {
-        text-align: center;
-        padding-top: 120px;
-    }
-
-    .hero h1 {
-        font-size: 2.7rem;
-    }
-
-    .hero-buttons {
-        justify-content: center;
-    }
-
-    .section-title h2 {
-        font-size: 2rem;
-    }
-
-    .cta-box h2 {
-        font-size: 2rem;
-    }
-}
-```
-
----
-
-# IMPORTANT
-
-This redesign:
-
-* DOES NOT affect your backend routes
-* DOES NOT affect your WhatsApp integration
-* DOES NOT affect Flask/Django variables like:
-
-  * `{{ restaurant_name }}`
-  * `{{ phone }}`
-* Keeps all existing connections working
-* Only upgrades the frontend/UI
-* Makes the project look modern, premium and AI-powered
